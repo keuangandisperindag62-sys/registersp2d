@@ -55,7 +55,6 @@
     border-spacing: 0;
     width: 100%;
     min-width: 800px;
-    font-family: 'Poppins', sans-serif;
     font-size: 14px;
   }
 
@@ -81,18 +80,6 @@
   tr:nth-child(even) { background: rgba(255,255,255,0.1); }
   tr:hover { background: rgba(52, 152, 219, 0.1); transition: 0.3s; }
 
-  /* Ukuran kolom spesifik */
-  th:nth-child(1), td:nth-child(1) { width: 8%; text-align:center; }
-  th:nth-child(2), td:nth-child(2) { width: 12%; }
-  th:nth-child(3), td:nth-child(3) { width: 15%; }
-  th:nth-child(4), td:nth-child(4) { width: 15%; }
-  th:nth-child(5), td:nth-child(5) { width: 15%; }
-  th:nth-child(6), td:nth-child(6) { width: 15%; }
-  th:nth-child(7), td:nth-child(7) { width: 10%; text-align:right; }
-  th:nth-child(8), td:nth-child(8) { width: 10%; text-align:right; }
-  th:nth-child(9), td:nth-child(9) { width: 10%; text-align:right; }
-  th:nth-child(10), td:nth-child(10) { width: 12%; text-align:center; }
-
   .btn-upload, .btn-pdf {
     padding: 6px 12px;
     border-radius: 8px;
@@ -116,6 +103,61 @@
     color: #fff;
   }
   .btn-pdf:hover { background: #2980b9; transform: scale(1.05); }
+
+  /* Toast notification */
+  .toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 12px 18px;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 14px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+    z-index: 9999;
+    animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  }
+  @keyframes fadein { from {opacity:0; transform:translateY(20px);} to {opacity:1; transform:translateY(0);} }
+  @keyframes fadeout { from {opacity:1;} to {opacity:0;} }
+
+  /* Pagination */
+  .pagination {
+    margin-top: 15px;
+    text-align: center;
+  }
+  .pagination button {
+    background: #3498db;
+    color: white;
+    border: none;
+    margin: 0 5px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: background 0.3s;
+  }
+  .pagination button:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+  }
+  .pagination span {
+    font-size: 13px;
+    margin: 0 8px;
+  }
+  .pagination select {
+    margin-left: 10px;
+    padding: 4px 6px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 13px;
+  }
+
+  /* Responsive table */
+  @media (max-width: 768px) {
+    table { font-size: 12px; min-width: 600px; }
+    th, td { padding: 8px; }
+    #searchInput { font-size: 12px; }
+  }
 </style>
 </head>
 <body>
@@ -126,10 +168,28 @@
 
 <div class="table-container">
   <table id="tabelData"></table>
+  <div class="pagination">
+    <button id="prevBtn">Prev</button>
+    <span id="pageInfo"></span>
+    <button id="nextBtn">Next</button>
+    <label>
+      Tampilkan
+      <select id="rowsPerPageSelect">
+        <option value="10" selected>10</option>
+        <option value="25">25</option>
+        <option value="50">50</option>
+      </select> baris
+    </label>
+  </div>
 </div>
 
 <script>
 const apiUrl = "https://script.google.com/macros/s/AKfycbxVfzTEgaWljYKe4V2IUhBSO4I0DjUa1CzcEkcxbaoR5eopO2Kd1oQY82MzKFgBhsQ/exec";
+
+let allRows = [];
+let filteredRows = [];
+let currentPage = 1;
+let rowsPerPage = 10;
 
 function formatIndoDate(date) {
   const bulan = ["Januari","Februari","Maret","April","Mei","Juni",
@@ -143,9 +203,8 @@ function formatDate(value) {
     const date = new Date(Math.round((value - 25569) * 86400 * 1000));
     return formatIndoDate(date);
   }
-  if (typeof value === "string" && value.includes("T")) {
-    return formatIndoDate(new Date(value));
-  }
+  const parsed = Date.parse(value);
+  if (!isNaN(parsed)) return formatIndoDate(new Date(parsed));
   return value;
 }
 
@@ -154,79 +213,115 @@ function formatRupiah(value) {
   return Number(value).toLocaleString("id-ID");
 }
 
+function showToast(msg, success = true) {
+  const toast = document.createElement("div");
+  toast.className = "toast";
+  toast.style.background = success ? "#27ae60" : "#e74c3c";
+  toast.textContent = msg;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 3000);
+}
+
+function renderTable() {
+  const table = document.getElementById("tabelData");
+  let html = "<tr>";
+  allRows[0].forEach(h => html += `<th>${h}</th>`);
+  html += "<th>Aksi</th></tr>";
+
+  const start = (currentPage - 1) * rowsPerPage;
+  const end = start + rowsPerPage;
+  const pageRows = filteredRows.slice(start, end);
+
+  pageRows.forEach((row, rowIndex) => {
+    html += "<tr>";
+    row.forEach((cell, i) => {
+      let header = allRows[0][i].toLowerCase();
+      if (header.includes("tanggal")) cell = formatDate(cell);
+      else if (header.includes("jumlah")) cell = formatRupiah(cell);
+
+      if (i === row.length - 1 && typeof cell === "string" && cell.startsWith("http")) {
+        html += `<td style="text-align:center">
+                   <a href="${cell}" target="_blank" class="btn-pdf">Lihat PDF</a>
+                 </td>`;
+      } else {
+        html += `<td>${cell || ""}</td>`;
+      }
+    });
+
+    const nomor = row[0];
+    const inputId = `fileInput_${start + rowIndex}`;
+    html += `<td style="text-align:center">
+              <input type="file" id="${inputId}" accept="application/pdf" style="display:none" onchange="uploadPDF(this, '${nomor}')">
+              <button class="btn-upload" onclick="document.getElementById('${inputId}').click()">Upload PDF</button>
+             </td>`;
+    html += "</tr>";
+  });
+
+  table.innerHTML = html;
+
+  document.getElementById("pageInfo").textContent =
+    `Halaman ${currentPage} dari ${Math.ceil(filteredRows.length / rowsPerPage) || 1}`;
+  document.getElementById("prevBtn").disabled = currentPage === 1;
+  document.getElementById("nextBtn").disabled = currentPage >= Math.ceil(filteredRows.length / rowsPerPage);
+}
+
 fetch(apiUrl)
   .then(res => res.json())
   .then(rows => {
-    let html = "<tr>";
-    rows[0].forEach(h => html += `<th>${h}</th>`);
-    html += "<th>Aksi</th></tr>";
+    allRows = rows;
+    filteredRows = rows.slice(1);
+    renderTable();
 
-    rows.slice(1).forEach((row, rowIndex) => {
-      html += "<tr>";
-      row.forEach((cell, i) => {
-        let header = rows[0][i].toLowerCase();
-        if (header.includes("tanggal")) cell = formatDate(cell);
-        else if (header.includes("jumlah")) cell = formatRupiah(cell);
-
-        if (i === row.length - 1 && typeof cell === "string" && cell.startsWith("http")) {
-          html += `<td style="text-align:center">
-                     <a href="${cell}" target="_blank" class="btn-pdf">Lihat PDF</a>
-                   </td>`;
-        } else {
-          html += `<td>${cell || ""}</td>`;
-        }
-      });
-
-      const nomor = row[0];
-      const inputId = `fileInput_${rowIndex}`;
-      html += `<td style="text-align:center">
-                <input type="file" id="${inputId}" accept="application/pdf" style="display:none" onchange="uploadPDF(this, '${nomor}')">
-                <button class="btn-upload" onclick="document.getElementById('${inputId}').click()">Upload PDF</button>
-               </td>`;
-      html += "</tr>";
-    });
-
-    document.getElementById("tabelData").innerHTML = html;
-
-    // Tambahkan event search/filter
     document.getElementById("searchInput").addEventListener("input", function() {
       const filter = this.value.toLowerCase();
-      const table = document.getElementById("tabelData");
-      const trs = table.getElementsByTagName("tr");
+      filteredRows = allRows.slice(1).filter(r =>
+        r.some((cell, idx) =>
+          idx < r.length-1 && (cell+"").toLowerCase().includes(filter)
+        )
+      );
+      currentPage = 1;
+      renderTable();
+    });
 
-      for (let i = 1; i < trs.length; i++) { // mulai dari 1 untuk skip header
-        const tds = trs[i].getElementsByTagName("td");
-        let show = false;
-        for (let j = 0; j < tds.length - 1; j++) { // skip kolom aksi
-          if (tds[j].textContent.toLowerCase().includes(filter)) {
-            show = true;
-            break;
-          }
-        }
-        trs[i].style.display = show ? "" : "none";
+    document.getElementById("prevBtn").addEventListener("click", () => {
+      if (currentPage > 1) { currentPage--; renderTable(); }
+    });
+    document.getElementById("nextBtn").addEventListener("click", () => {
+      if (currentPage < Math.ceil(filteredRows.length / rowsPerPage)) {
+        currentPage++; renderTable();
       }
+    });
+
+    document.getElementById("rowsPerPageSelect").addEventListener("change", function() {
+      rowsPerPage = parseInt(this.value);
+      currentPage = 1;
+      renderTable();
     });
   });
 
 async function uploadPDF(input, nomor) {
   const file = input.files[0];
   if (!file) return;
-  if(file.type !== "application/pdf"){ alert("File harus PDF!"); return; }
-  
+  if (file.type !== "application/pdf") { showToast("❌ File harus PDF!", false); return; }
+
   const reader = new FileReader();
   reader.readAsDataURL(file);
   reader.onload = async function() {
     const base64File = reader.result.split(",")[1];
-    const response = await fetch(apiUrl, {
-      method: "POST",
-      body: new URLSearchParams({ file: base64File, nomor: nomor })
-    });
-    const data = await response.json();
-    if (data.status === "sukses") {
-      alert("✅ Upload berhasil! Link: " + data.fileUrl);
-      location.reload();
-    } else {
-      alert("❌ Gagal upload: " + data.error);
+    try {
+      const response = await fetch(apiUrl, {
+        method: "POST",
+        body: new URLSearchParams({ file: base64File, nomor: nomor })
+      });
+      const data = await response.json();
+      if (data.status === "sukses") {
+        showToast("✅ Upload berhasil!");
+        setTimeout(()=>location.reload(), 1500);
+      } else {
+        showToast("❌ Gagal upload: " + data.error, false);
+      }
+    } catch(err) {
+      showToast("⚠️ Error koneksi!", false);
     }
   };
 }
