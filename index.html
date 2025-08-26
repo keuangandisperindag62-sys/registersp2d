@@ -24,6 +24,37 @@
     text-shadow: 1px 1px 4px rgba(0,0,0,0.5);
   }
 
+  /* 🔹 Running Text */
+  .running-text {
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    box-sizing: border-box;
+    background: rgba(1, 61, 121, 0.85);
+    color: #fff;
+    font-weight: 600;
+    padding: 8px;
+    margin-bottom: 12px;
+    border-radius: 8px;
+    position: relative;
+  }
+  .running-text::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(to right, rgba(1,61,121,0.9), transparent 20%, transparent 80%, rgba(1,61,121,0.9));
+    pointer-events: none;
+  }
+  .running-text span {
+    display: inline-block;
+    padding-left: 100%;
+    animation: marquee 12s linear infinite;
+  }
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-100%); }
+  }
+
   #searchInput {
     width:98.3%;
     padding:10px;
@@ -183,6 +214,11 @@
 <body>
 
 <h1>DATA PENCAIRAN SPJ</h1>
+
+<!-- 🔹 Running Text -->
+<div class="running-text">
+  <span>⚡ Selamat Datang di Sistem Data Pencairan SPJ ⚡ | Gunakan pencarian untuk menemukan data lebih cepat!</span>
+</div>
 
 <input type="text" id="searchInput" placeholder="Cari data...">
 
