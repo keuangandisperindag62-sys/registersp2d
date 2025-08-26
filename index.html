@@ -6,145 +6,121 @@
 <title>Data Realisasi SP2D</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 <style>
+  /* Reset & Body */
   body {
     font-family: 'Poppins', sans-serif;
-    padding: 20px;
     margin: 0;
+    padding: 20px;
     background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)),
                 url('rm222-mind-16.jpg') no-repeat center center fixed;
     background-size: cover;
-    min-height: 100vh;
     color: #333;
+    min-height: 100vh;
   }
-
   h1 {
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     color: #013d79;
     text-shadow: 1px 1px 4px rgba(0,0,0,0.5);
   }
 
-  /* 🔹 Running Text */
+  /* Running text */
   .running-text {
     width: 100%;
     overflow: hidden;
     white-space: nowrap;
-    box-sizing: border-box;
-    background: rgba(1, 61, 121, 0.85);
+    position: relative;
+    background: rgba(1,61,121,0.85);
     color: #fff;
     font-weight: 600;
-    padding: 8px;
-    margin-bottom: 12px;
+    padding: 8px 0;
     border-radius: 8px;
-    position: relative;
-  }
-  .running-text::before {
-    content: "";
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: linear-gradient(to right, rgba(1,61,121,0.9), transparent 20%, transparent 80%, rgba(1,61,121,0.9));
-    pointer-events: none;
+    margin-bottom: 15px;
   }
   .running-text span {
     display: inline-block;
     padding-left: 100%;
     animation: marquee 12s linear infinite;
   }
-  @keyframes marquee {
-    from { transform: translateX(0); }
-    to   { transform: translateX(-100%); }
-  }
+  @keyframes marquee { from {transform: translateX(0);} to {transform: translateX(-100%);} }
 
+  /* Search */
   #searchInput {
-    width:98.3%;
-    padding:10px;
-    margin-bottom:15px;
-    border-radius:10px;
-    border:1px solid #ccc;
-    font-size:14px;
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border-radius: 12px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    box-sizing: border-box;
   }
 
+  /* Table container */
   .table-container {
     overflow-x: auto;
     border-radius: 15px;
-    background: rgba(255,255,255,0.35);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    background: rgba(255,255,255,0.25);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
     padding: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
     opacity: 0;
     transform: translateY(20px);
-    animation: fadeInUp 1s forwards;
+    animation: fadeInUp 0.8s forwards;
   }
-
-  @keyframes fadeInUp {
-    to { opacity: 1; transform: translateY(0); }
-  }
+  @keyframes fadeInUp { to { opacity: 1; transform: translateY(0);} }
 
   table {
     border-collapse: separate;
     border-spacing: 0;
     width: 100%;
-    min-width: 800px;
+    min-width: 600px;
     font-size: 14px;
   }
-
   th, td {
     padding: 12px 10px;
     text-align: left;
     color: #222;
-    text-shadow: 0 0 1px rgba(0,0,0,0.2);
     vertical-align: middle;
   }
-
   th {
-    background: linear-gradient(90deg, #3498db, #2980b9);
+    background: linear-gradient(90deg,#3498db,#2980b9);
     color: #fff;
-    font-weight: 600;
-    font-size: 14px;
-    text-align: center;
     position: sticky;
     top: 0;
     z-index: 2;
+    text-align: center;
   }
+  tr:nth-child(even){background: rgba(255,255,255,0.1);}
+  tr:hover { background: rgba(52,152,219,0.15); transition: 0.3s; }
 
-  tr:nth-child(even) { background: rgba(255,255,255,0.1); }
-  tr:hover { background: rgba(52, 152, 219, 0.1); transition: 0.3s; }
-
+  /* Buttons */
   .btn-upload, .btn-pdf {
     padding: 6px 12px;
-    border-radius: 8px;
-    font-size: 12px;
+    border-radius: 10px;
+    font-size: 13px;
     font-weight: 600;
     cursor: pointer;
     border: none;
-    transition: all 0.3s ease;
     text-decoration: none;
+    transition: all 0.3s ease;
     display: inline-block;
   }
+  .btn-upload { background:#27ae60; color:#fff;}
+  .btn-upload:hover {background:#219150; transform:translateY(-2px);}
+  .btn-pdf {background:#3498db; color:#fff;}
+  .btn-pdf:hover {background:#2980b9; transform: scale(1.05);}
 
-  .btn-upload {
-    background: #27ae60;
-    color: #fff;
-  }
-  .btn-upload:hover { background: #219150; transform: translateY(-2px); }
-
-  .btn-pdf {
-    background: #3498db;
-    color: #fff;
-  }
-  .btn-pdf:hover { background: #2980b9; transform: scale(1.05); }
-
-  /* Toast notification */
+  /* Toast */
   .toast {
     position: fixed;
     bottom: 20px;
     right: 20px;
     padding: 12px 18px;
-    border-radius: 8px;
+    border-radius: 12px;
     color: #fff;
     font-size: 14px;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+    box-shadow: 0 3px 12px rgba(0,0,0,0.25);
     z-index: 9999;
     animation: fadein 0.5s, fadeout 0.5s 2.5s;
   }
@@ -167,14 +143,8 @@
     font-size: 13px;
     transition: background 0.3s;
   }
-  .pagination button:disabled {
-    background: #ccc;
-    cursor: not-allowed;
-  }
-  .pagination span {
-    font-size: 13px;
-    margin: 0 8px;
-  }
+  .pagination button:disabled { background: #ccc; cursor: not-allowed; }
+  .pagination span { font-size: 13px; margin: 0 8px; }
   .pagination select {
     margin-left: 10px;
     padding: 4px 6px;
@@ -199,15 +169,18 @@
     z-index: 10000;
     display: none;
   }
-  @keyframes spin {
-    100% { transform: rotate(360deg); }
-  }
+  @keyframes spin { 100% { transform: rotate(360deg); } }
 
-  /* Responsive table */
-  @media (max-width: 768px) {
-    table { font-size: 12px; min-width: 600px; }
-    th, td { padding: 8px; }
-    #searchInput { font-size: 12px; }
+  /* Responsive */
+  @media (max-width: 768px){
+    table { font-size: 13px; min-width: 500px;}
+    th, td { padding: 8px;}
+    #searchInput { font-size: 13px; padding: 10px;}
+  }
+  @media (max-width: 480px){
+    table { font-size: 12px; min-width: 400px;}
+    th, td { padding: 6px;}
+    #searchInput { font-size: 12px; padding: 8px;}
   }
 </style>
 </head>
@@ -215,14 +188,12 @@
 
 <h1>ARSIP DIGITAL SUBBAG. KEUANGAN</h1>
 
-<!-- 🔹 Running Text -->
 <div class="running-text">
-  <span> Selamat Datang di Arsip Digital Subbag. Keuangan Dinas Perindustrian dan Perdagangan Kab. Blitar | Gunakan pencarian untuk menemukan data lebih cepat!</span>
+  <span> Selamat Datang di Arsip Digital Subbag. Keuangan Dinas Perindustrian dan Perdagangan Kab. Blitar | Gunakan pencarian untuk menemukan data lebih cepat! </span>
 </div>
 
 <input type="text" id="searchInput" placeholder="Cari data...">
 
-<!-- Loader -->
 <div id="loader" class="loader"></div>
 
 <div class="table-container">
@@ -245,10 +216,7 @@
 <script>
 const apiUrl = "https://script.google.com/macros/s/AKfycbxVfzTEgaWljYKe4V2IUhBSO4I0DjUa1CzcEkcxbaoR5eopO2Kd1oQY82MzKFgBhsQ/exec";
 
-let allRows = [];
-let filteredRows = [];
-let currentPage = 1;
-let rowsPerPage = 10;
+let allRows = [], filteredRows = [], currentPage = 1, rowsPerPage = 10;
 
 function formatIndoDate(date) {
   const bulan = ["Januari","Februari","Maret","April","Mei","Juni",
@@ -256,152 +224,125 @@ function formatIndoDate(date) {
   return `${date.getDate()} ${bulan[date.getMonth()]} ${date.getFullYear()}`;
 }
 
-function formatDate(value) {
-  if (!value) return "";
-  if (!isNaN(value)) {
-    const date = new Date(Math.round((value - 25569) * 86400 * 1000));
+function formatDate(value){
+  if(!value) return "";
+  if(!isNaN(value)){
+    const date = new Date(Math.round((value-25569)*86400*1000));
     return formatIndoDate(date);
   }
   const parsed = Date.parse(value);
-  if (!isNaN(parsed)) return formatIndoDate(new Date(parsed));
+  if(!isNaN(parsed)) return formatIndoDate(new Date(parsed));
   return value;
 }
 
-function formatRupiah(value) {
-  if (!value || isNaN(value)) return value;
+function formatRupiah(value){
+  if(!value||isNaN(value)) return value;
   return Number(value).toLocaleString("id-ID");
 }
 
-function showToast(msg, success = true) {
+function showToast(msg, success=true){
   const toast = document.createElement("div");
   toast.className = "toast";
-  toast.style.background = success ? "#27ae60" : "#e74c3c";
+  toast.style.background = success?"#27ae60":"#e74c3c";
   toast.textContent = msg;
   document.body.appendChild(toast);
-  setTimeout(() => toast.remove(), 3000);
+  setTimeout(()=>toast.remove(),3000);
 }
 
-function showLoader() {
-  document.getElementById("loader").style.display = "block";
-}
-function hideLoader() {
-  document.getElementById("loader").style.display = "none";
-}
+function showLoader(){ document.getElementById("loader").style.display="block"; }
+function hideLoader(){ document.getElementById("loader").style.display="none"; }
 
-function renderTable() {
+function renderTable(){
   const table = document.getElementById("tabelData");
-  let html = "<tr>";
-  allRows[0].forEach(h => html += `<th>${h}</th>`);
-  html += "<th>Aksi</th></tr>";
+  if(!allRows.length){ table.innerHTML="<tr><td>Loading...</td></tr>"; return;}
+  let html="<tr>";
+  allRows[0].forEach(h=>html+=`<th>${h}</th>`);
+  html+="<th>Aksi</th></tr>";
 
-  const start = (currentPage - 1) * rowsPerPage;
-  const end = start + rowsPerPage;
-  const pageRows = filteredRows.slice(start, end);
+  const start=(currentPage-1)*rowsPerPage;
+  const end=start+rowsPerPage;
+  const pageRows=filteredRows.slice(start,end);
 
-  pageRows.forEach((row, rowIndex) => {
-    html += "<tr>";
-    row.forEach((cell, i) => {
-      let header = allRows[0][i].toLowerCase();
-      if (header.includes("tanggal")) cell = formatDate(cell);
-      else if (header.includes("jumlah")) cell = formatRupiah(cell);
+  if(!pageRows.length){ 
+    table.innerHTML=html+`<tr><td colspan="${allRows[0].length+1}" style="text-align:center">Data tidak ditemukan</td></tr>`;
+  }else{
+    pageRows.forEach((row,rowIndex)=>{
+      html+="<tr>";
+      row.forEach((cell,i)=>{
+        let header=allRows[0][i].toLowerCase();
+        if(header.includes("tanggal")) cell=formatDate(cell);
+        else if(header.includes("jumlah")) cell=formatRupiah(cell);
 
-      if (i === row.length - 1 && typeof cell === "string" && cell.startsWith("http")) {
-        html += `<td style="text-align:center">
-                   <a href="${cell}" target="_blank" class="btn-pdf">Lihat PDF</a>
-                 </td>`;
-      } else {
-        html += `<td>${cell || ""}</td>`;
-      }
-    });
+        if(i===row.length-1 && typeof cell==="string" && cell.startsWith("http")){
+          html+=`<td style="text-align:center"><a href="${cell}" target="_blank" class="btn-pdf">Lihat PDF</a></td>`;
+        }else{
+          html+=`<td>${cell||""}</td>`;
+        }
+      });
 
-    const nomor = row[0];
-    const inputId = `fileInput_${start + rowIndex}`;
-    html += `<td style="text-align:center">
-              <input type="file" id="${inputId}" accept="application/pdf" style="display:none" onchange="uploadPDF(this, '${nomor}')">
-              <button class="btn-upload" onclick="document.getElementById('${inputId}').click()">Upload PDF</button>
+      const nomor=row[0];
+      const inputId=`fileInput_${start+rowIndex}`;
+      html+=`<td style="text-align:center">
+               <input type="file" id="${inputId}" accept="application/pdf" style="display:none" onchange="uploadPDF(this,'${nomor}')">
+               <button class="btn-upload" id="btn_${inputId}" onclick="document.getElementById('${inputId}').click()">Upload PDF</button>
              </td>`;
-    html += "</tr>";
-  });
+      html+="</tr>";
+    });
+    table.innerHTML=html;
+  }
 
-  table.innerHTML = html;
-
-  document.getElementById("pageInfo").textContent =
-    `Halaman ${currentPage} dari ${Math.ceil(filteredRows.length / rowsPerPage) || 1}`;
-  document.getElementById("prevBtn").disabled = currentPage === 1;
-  document.getElementById("nextBtn").disabled = currentPage >= Math.ceil(filteredRows.length / rowsPerPage);
+  document.getElementById("pageInfo").textContent=`Halaman ${currentPage} dari ${Math.ceil(filteredRows.length/rowsPerPage)||1}`;
+  document.getElementById("prevBtn").disabled=currentPage===1;
+  document.getElementById("nextBtn").disabled=currentPage>=Math.ceil(filteredRows.length/rowsPerPage);
 }
 
 showLoader();
 fetch(apiUrl)
-  .then(res => res.json())
-  .then(rows => {
-    allRows = rows;
-    filteredRows = rows.slice(1);
+.then(res=>res.json())
+.then(rows=>{
+  allRows=rows;
+  filteredRows=rows.slice(1);
+  renderTable();
+
+  document.getElementById("searchInput").addEventListener("input",function(){
+    const filter=this.value.toLowerCase();
+    filteredRows=allRows.slice(1).filter(r=>r.some((cell,idx)=>idx<r.length-1&&(cell+"").toLowerCase().includes(filter)));
+    currentPage=1;
     renderTable();
+  });
 
-    document.getElementById("searchInput").addEventListener("input", function() {
-      const filter = this.value.toLowerCase();
-      filteredRows = allRows.slice(1).filter(r =>
-        r.some((cell, idx) =>
-          idx < r.length-1 && (cell+"").toLowerCase().includes(filter)
-        )
-      );
-      currentPage = 1;
-      renderTable();
-    });
+  document.getElementById("prevBtn").addEventListener("click",()=>{ if(currentPage>1){currentPage--; renderTable();} });
+  document.getElementById("nextBtn").addEventListener("click",()=>{ if(currentPage<Math.ceil(filteredRows.length/rowsPerPage)){currentPage++; renderTable();} });
+  document.getElementById("rowsPerPageSelect").addEventListener("change",function(){ rowsPerPage=parseInt(this.value); currentPage=1; renderTable(); });
+})
+.catch(()=>showToast("⚠️ Gagal ambil data!",false))
+.finally(()=>hideLoader());
 
-    document.getElementById("prevBtn").addEventListener("click", () => {
-      if (currentPage > 1) { currentPage--; renderTable(); }
-    });
-    document.getElementById("nextBtn").addEventListener("click", () => {
-      if (currentPage < Math.ceil(filteredRows.length / rowsPerPage)) {
-        currentPage++; renderTable();
-      }
-    });
+async function uploadPDF(input,nomor){
+  const file=input.files[0];
+  if(!file) return;
+  if(file.type!=="application/pdf"){ showToast("❌ File harus PDF!",false); return; }
 
-    document.getElementById("rowsPerPageSelect").addEventListener("change", function() {
-      rowsPerPage = parseInt(this.value);
-      currentPage = 1;
-      renderTable();
-    });
-  })
-  .catch(() => showToast("⚠️ Gagal ambil data!", false))
-  .finally(() => hideLoader());
-
-async function uploadPDF(input, nomor) {
-  const file = input.files[0];
-  if (!file) return;
-  if (file.type !== "application/pdf") { showToast("❌ File harus PDF!", false); return; }
-
-  const reader = new FileReader();
+  const reader=new FileReader();
   reader.readAsDataURL(file);
-  reader.onload = async function() {
-    const base64File = reader.result.split(",")[1];
+  const btn=document.getElementById(`btn_${input.id}`);
+  btn.disabled=true;
+  reader.onload=async function(){
+    const base64File=reader.result.split(",")[1];
     showLoader();
-    try {
-      const response = await fetch(apiUrl, {
-        method: "POST",
-        body: new URLSearchParams({ file: base64File, nomor: nomor })
+    try{
+      const response=await fetch(apiUrl,{
+        method:"POST",
+        body:new URLSearchParams({file:base64File, nomor:nomor})
       });
-      const data = await response.json();
-      if (data.status === "sukses") {
-        showToast("Upload Berhasil!");
-        setTimeout(()=>location.reload(), 1500);
-      } else {
-        showToast("❌ Gagal upload: " + data.error, false);
-      }
-    } catch(err) {
-      showToast("⚠️ Error koneksi!", false);
-    } finally {
-      hideLoader();
-    }
+      const data=await response.json();
+      if(data.status==="sukses"){ showToast("Upload Berhasil!"); setTimeout(()=>location.reload(),1500);}
+      else showToast("❌ Gagal upload: "+data.error,false);
+    }catch(err){ showToast("⚠️ Error koneksi!",false);}
+    finally{ hideLoader(); btn.disabled=false; }
   };
 }
 </script>
 
 </body>
 </html>
-
-
-
-
