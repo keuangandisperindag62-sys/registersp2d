@@ -38,7 +38,7 @@
     justify-content: center;
     gap: 15px;
     position: relative;
-    animation: pulseHeader 2s ease-in-out infinite alternate; /* Logo + teks ikut gerakan */
+    animation: pulseHeader 2s ease-in-out infinite alternate;
   }
 
   .header-content .logo {
@@ -48,11 +48,14 @@
     filter: drop-shadow(0 0 8px rgba(0,0,0,0.4));
   }
 
-  .header-content h1 {
+  .header-text {
+    text-align: center;
+  }
+
+  .header-text h1 {
     margin: 0;
     font-size: 3rem;
     font-weight: 900;
-    text-align: center;
     color: #fff;
     background: linear-gradient(270deg, #0d47a1, #1976d2, #42a5f5, #1abc9c, #f39c12);
     -webkit-background-clip: text;
@@ -62,6 +65,14 @@
     animation: gradientShift 6s ease infinite;
     position: relative;
     z-index: 1;
+  }
+
+  .header-text p.subtext {
+    margin: 5px 0 0;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #f1f1f1;
+    text-shadow: 0 0 6px rgba(0,0,0,0.4);
   }
 
   .header-content::after {
@@ -245,13 +256,13 @@
     table { font-size: 13px; min-width: 500px;}
     th, td { padding: 8px;}
     #searchInput { font-size: 13px; padding: 10px;}
-    .header-content h1 { font-size: 2rem; }
+    .header-text h1 { font-size: 2rem; }
   }
   @media (max-width: 480px){
     table { font-size: 12px; min-width: 400px;}
     th, td { padding: 6px;}
     #searchInput { font-size: 12px; padding: 8px;}
-    .header-content h1 { font-size: 1.6rem; }
+    .header-text h1 { font-size: 1.6rem; }
   }
 </style>
 </head>
@@ -259,9 +270,11 @@
 
 <div class="header-container">
   <div class="header-content">
-    <!-- Ganti logo.png dengan logo instansi -->
     <img src="800px-Lambang_Kabupaten_Blitar.webp.png" alt="Logo" class="logo">
-    <h1>ARSIP DIGITAL SUBBAG. KEUANGAN</h1>
+    <div class="header-text">
+      <h1>ARSIP DIGITAL SUBBAG. KEUANGAN</h1>
+      <p class="subtext">Dinas Perindustrian dan Perdagangan Kabupaten Blitar</p>
+    </div>
   </div>
 </div>
 
@@ -423,3 +436,4 @@ async function uploadPDF(input,nomor){
 
 </body>
 </html>
+
