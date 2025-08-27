@@ -32,6 +32,19 @@
     margin: 0 auto 25px;
   }
 
+  .header-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+  }
+
+  .header-content .logo {
+    width: 60px; /* atur ukuran logo */
+    height: auto;
+    border-radius: 12px; /* opsional */
+  }
+
   .header-container h1 {
     margin: 0;
     font-size: 3rem;
@@ -240,7 +253,11 @@
 <body>
 
 <div class="header-container">
-  <h1>ARSIP DIGITAL SUBBAG. KEUANGAN</h1>
+  <div class="header-content">
+    <!-- Ganti logo.png dengan path/logo Anda -->
+    <img src="800px-Lambang_Kabupaten_Blitar.webp.png" alt="Logo" class="logo">
+    <h1>ARSIP DIGITAL SUBBAG. KEUANGAN</h1>
+  </div>
 </div>
 
 <div class="running-text">
@@ -401,3 +418,4 @@ async function uploadPDF(input,nomor){
 
 </body>
 </html>
+
