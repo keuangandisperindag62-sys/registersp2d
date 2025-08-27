@@ -37,15 +37,18 @@
     align-items: center;
     justify-content: center;
     gap: 15px;
+    position: relative;
+    animation: pulseHeader 2s ease-in-out infinite alternate; /* Logo + teks ikut gerakan */
   }
 
   .header-content .logo {
-    width: 60px; /* atur ukuran logo */
+    width: 60px;
     height: auto;
-    border-radius: 12px; /* opsional */
+    border-radius: 12px;
+    filter: drop-shadow(0 0 8px rgba(0,0,0,0.4));
   }
 
-  .header-container h1 {
+  .header-content h1 {
     margin: 0;
     font-size: 3rem;
     font-weight: 900;
@@ -55,20 +58,22 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     text-shadow: 0 0 10px rgba(0,0,0,0.5), 0 0 20px rgba(0,0,0,0.3);
-    animation: gradientShift 6s ease infinite, pulseHeader 2s ease-in-out infinite alternate;
+    background-size: 400% 400%;
+    animation: gradientShift 6s ease infinite;
     position: relative;
     z-index: 1;
   }
 
-  .header-container h1::after {
+  .header-content::after {
     content: '';
     position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
+    top: 0; left: -50%;
+    width: 200%; height: 100%;
     background: linear-gradient(120deg, rgba(255,255,255,0.5), rgba(255,255,255,0));
     mix-blend-mode: screen;
-    filter: blur(4px);
+    filter: blur(6px);
     animation: shine 3s linear infinite;
+    z-index: 2;
   }
 
   @keyframes gradientShift {
@@ -240,13 +245,13 @@
     table { font-size: 13px; min-width: 500px;}
     th, td { padding: 8px;}
     #searchInput { font-size: 13px; padding: 10px;}
-    .header-container h1 { font-size: 2rem; }
+    .header-content h1 { font-size: 2rem; }
   }
   @media (max-width: 480px){
     table { font-size: 12px; min-width: 400px;}
     th, td { padding: 6px;}
     #searchInput { font-size: 12px; padding: 8px;}
-    .header-container h1 { font-size: 1.6rem; }
+    .header-content h1 { font-size: 1.6rem; }
   }
 </style>
 </head>
@@ -254,7 +259,7 @@
 
 <div class="header-container">
   <div class="header-content">
-    <!-- Ganti logo.png dengan path/logo Anda -->
+    <!-- Ganti logo.png dengan logo instansi -->
     <img src="800px-Lambang_Kabupaten_Blitar.webp.png" alt="Logo" class="logo">
     <h1>ARSIP DIGITAL SUBBAG. KEUANGAN</h1>
   </div>
@@ -418,4 +423,3 @@ async function uploadPDF(input,nomor){
 
 </body>
 </html>
-
