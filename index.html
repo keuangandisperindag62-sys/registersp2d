@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Data Realisasi SP2D</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
   /* Reset & Body */
   body {
@@ -17,11 +17,62 @@
     color: #333;
     min-height: 100vh;
   }
-  h1 {
+
+  /* Header Interaktif */
+  .header-container {
+    display: inline-block;
+    padding: 20px 40px;
+    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    position: relative;
+    overflow: hidden;
+    margin: 0 auto 25px;
+  }
+
+  .header-container h1 {
+    margin: 0;
+    font-size: 3rem;
+    font-weight: 900;
     text-align: center;
-    margin-bottom: 15px;
-    color: #013d79;
-    text-shadow: 1px 1px 4px rgba(0,0,0,0.5);
+    color: #fff;
+    background: linear-gradient(270deg, #0d47a1, #1976d2, #42a5f5, #1abc9c, #f39c12);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 10px rgba(0,0,0,0.5), 0 0 20px rgba(0,0,0,0.3);
+    animation: gradientShift 6s ease infinite, pulseHeader 2s ease-in-out infinite alternate;
+    position: relative;
+    z-index: 1;
+  }
+
+  .header-container h1::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: linear-gradient(120deg, rgba(255,255,255,0.5), rgba(255,255,255,0));
+    mix-blend-mode: screen;
+    filter: blur(4px);
+    animation: shine 3s linear infinite;
+  }
+
+  @keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  @keyframes pulseHeader {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.07); }
+    100% { transform: scale(1); }
+  }
+
+  @keyframes shine {
+    0% { transform: translateX(-100%) rotate(10deg); }
+    100% { transform: translateX(100%) rotate(10deg); }
   }
 
   /* Running text */
@@ -176,17 +227,21 @@
     table { font-size: 13px; min-width: 500px;}
     th, td { padding: 8px;}
     #searchInput { font-size: 13px; padding: 10px;}
+    .header-container h1 { font-size: 2rem; }
   }
   @media (max-width: 480px){
     table { font-size: 12px; min-width: 400px;}
     th, td { padding: 6px;}
     #searchInput { font-size: 12px; padding: 8px;}
+    .header-container h1 { font-size: 1.6rem; }
   }
 </style>
 </head>
 <body>
 
-<h1>ARSIP DIGITAL SUBBAG. KEUANGAN</h1>
+<div class="header-container">
+  <h1>ARSIP DIGITAL SUBBAG. KEUANGAN</h1>
+</div>
 
 <div class="running-text">
   <span> Selamat Datang di Arsip Digital Subbag. Keuangan Dinas Perindustrian dan Perdagangan Kab. Blitar | Gunakan pencarian untuk menemukan data lebih cepat! </span>
