@@ -252,57 +252,6 @@
   }
   @keyframes spin { 100% { transform: rotate(360deg); } }
 
-  /* Mini Game */
-  .mini-game {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    width: 220px;
-    border-radius: 15px;
-    background: rgba(255, 255, 255, 0.25);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.25);
-    font-size: 14px;
-    color: #222;
-    z-index: 1000;
-    overflow: hidden;
-    transition: height 0.3s ease;
-  }
-
-  .mini-game-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: rgba(13,71,161,0.9);
-    color: #fff;
-    padding: 6px 10px;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 600;
-  }
-
-  .mini-game-header span {
-    flex: 1;
-    text-align: center;
-  }
-
-  .mini-game-header button {
-    background: transparent;
-    border: none;
-    color: #fff;
-    font-size: 16px;
-    cursor: pointer;
-  }
-
-  .mini-game-content {
-    padding: 12px;
-    display: block; /* default terbuka */
-  }
-  .mini-game-content.hidden {
-    display: none;
-  }
-
   /* Responsive */
   @media (max-width: 768px){
     table { font-size: 13px; min-width: 500px;}
@@ -355,19 +304,6 @@
   </div>
 </div>
 
-<!-- Mini Game -->
-<div class="mini-game">
-  <div class="mini-game-header" onclick="toggleGame()">
-    <span>🎮 Tebak Angka</span>
-    <button id="toggleBtn">−</button>
-  </div>
-  <div class="mini-game-content" id="gameContent">
-    <input type="number" id="guessInput" placeholder="1 - 10">
-    <button onclick="checkGuess()">Tebak!</button>
-    <p id="gameMsg">Coba tebak angkanya!</p>
-  </div>
-</div>
-
 <script>
 const apiUrl = "https://script.google.com/macros/s/AKfycbxVfzTEgaWljYKe4V2IUhBSO4I0DjUa1CzcEkcxbaoR5eopO2Kd1oQY82MzKFgBhsQ/exec";
 
@@ -409,10 +345,7 @@ function hideLoader(){ document.getElementById("loader").style.display="none"; }
 
 function renderTable(){
   const table = document.getElementById("tabelData");
-  if(!allRows.length || !allRows[0]){ 
-    table.innerHTML="<tr><td>Data tidak tersedia</td></tr>"; 
-    return;
-  }
+  if(!allRows.length){ table.innerHTML="<tr><td>Loading...</td></tr>"; return;}
   let html="<tr>";
   allRows[0].forEach(h=>html+=`<th>${h}</th>`);
   html+="<th>Aksi</th></tr>";
@@ -464,10 +397,47 @@ fetch(apiUrl)
 
   document.getElementById("searchInput").addEventListener("input",function(){
     const filter=this.value.toLowerCase();
-    filteredRows=allRows.slice(1).filter(r=>r.some((cell)=> (cell+"").toLowerCase().includes(filter)));
+    filteredRows=allRows.slice(1).filter(r=>r.some((cell,idx)=>idx<r.length-1&&(cell+"").toLowerCase().includes(filter)));
     currentPage=1;
     renderTable();
   });
 
   document.getElementById("prevBtn").addEventListener("click",()=>{ if(currentPage>1){currentPage--; renderTable();} });
-  document
+  document.getElementById("nextBtn").addEventListener("click",()=>{ if(currentPage<Math.ceil(filteredRows.length/rowsPerPage)){currentPage++; renderTable();} });
+  document.getElementById("rowsPerPageSelect").addEventListener("change",function(){ rowsPerPage=parseInt(this.value); currentPage=1; renderTable(); });
+})
+.catch(()=>showToast("⚠️ Gagal ambil data!",false))
+.finally(()=>hideLoader());
+
+async function uploadPDF(input,nomor){
+  const file=input.files[0];
+  if(!file) return;
+  if(file.type!=="application/pdf"){ showToast("❌ File harus PDF!",false); return; }
+
+  const reader=new FileReader();
+  reader.readAsDataURL(file);
+  const btn=document.getElementById(`btn_${input.id}`);
+  btn.disabled=true;
+  reader.onload=async function(){
+    const base64File=reader.result.split(",")[1];
+    showLoader();
+    try{
+      const response=await fetch(apiUrl,{
+        method:"POST",
+        body:new URLSearchParams({file:base64File, nomor:nomor})
+      });
+      const data=await response.json();
+      if(data.status==="sukses"){ showToast("Upload Berhasil!"); setTimeout(()=>location.reload(),1500);}
+      else showToast("❌ Gagal upload: "+data.error,false);
+    }catch(err){ showToast("⚠️ Error koneksi!",false);}
+    finally{ hideLoader(); btn.disabled=false; }
+  };
+}
+</script>
+
+</body>
+</html>
+
+
+
+
